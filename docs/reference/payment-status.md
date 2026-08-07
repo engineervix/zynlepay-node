@@ -9,7 +9,7 @@ order, and to disambiguate a timed-out payment request before retrying it.
 
 ```ts
 const result = await client.paymentStatus({ referenceNo: "ORDER-1001" });
-console.log(result.status);
+console.log(result.response_code); // "100" success, "990" pending, "995" failed
 ```
 
 ## Parameters
@@ -22,12 +22,17 @@ console.log(result.status);
 
 The response preserves all raw API fields. Notable fields:
 
-- `status` — transaction status as reported by the API.
+- `response_code` — the field to branch on. Confirmed against a live sandbox
+  transaction, across its full lifecycle:
+  - `"100"` — successful.
+  - `"990"` — indeterminate; check `message` for guidance (the API asks you
+    to retry after 60 seconds). This is a normal response, not an error.
+  - `"995"` — failed.
 - `reference_no` — echo of your reference number.
-- `response_code` — API response code. A value of `"990"` means the status
-  could not be determined yet; check `message` for guidance (the API asks you
-  to retry after 60 seconds). This is a normal response, not an error.
 - `message` — human-readable API message.
+- `status` — documented by ZynlePay but not observed in any live sandbox
+  response (every one carried `response_code`/`message` only). Don't build
+  logic around it being present; use `response_code`.
 
 This operation is idempotent and safe to retry. Throws `ZynlePayError` on
 failure — see [Error handling](/guide/errors).
