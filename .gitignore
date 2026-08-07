@@ -320,6 +320,9 @@ dist
 # vuepress v2.x temp and cache directory
 .temp
 
+# VitePress cache (dist is already covered by the bare `dist` pattern above)
+docs/.vitepress/cache
+
 # Docusaurus cache and generated files
 .docusaurus
 
