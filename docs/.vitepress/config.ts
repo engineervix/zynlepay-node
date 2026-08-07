@@ -1,4 +1,5 @@
 import { defineConfig } from "vitepress";
+import llmstxt, { copyOrDownloadAsMarkdownButtons } from "vitepress-plugin-llms";
 
 // GitHub Pages serves project sites under /<repo-name>/, so the base must
 // match the repository the docs are deployed from. Locally (and for a
@@ -16,6 +17,18 @@ export default defineConfig({
   head: [["link", { rel: "icon", href: `${base}favicon.ico` }]],
   sitemap: {
     hostname: "https://engineervix.github.io/zynlepay-node/",
+  },
+  markdown: {
+    config(md) {
+      md.use(copyOrDownloadAsMarkdownButtons);
+    },
+  },
+  vite: {
+    plugins: [
+      llmstxt({
+        ignoreFiles: ["reference/_shared/**"],
+      }),
+    ],
   },
   themeConfig: {
     search: {
