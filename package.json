@@ -6,7 +6,7 @@
     "type": "git",
     "url": "git+https://github.com/engineervix/zynlepay-node.git"
   },
-  "homepage": "https://engineervix.github.io/zynlepay-node/",
+  "homepage": "https://engineervix.github.io/zynlepay-node",
   "license": "BSD-3-Clause",
   "type": "module",
   "main": "./dist/index.cjs",
