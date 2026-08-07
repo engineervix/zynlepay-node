@@ -31,12 +31,12 @@ jobs:
 
       - run: npm run lint
 
+      - run: npm run build
+
       - run: npm run typecheck
 
       - name: Test
         run: npx vitest run
-
-      - run: npm run build
 
   coverage:
     runs-on: ubuntu-latest
