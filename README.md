@@ -133,7 +133,7 @@ const result = await client.cardDeposit({
 
 ```ts
 const result = await client.paymentStatus({ referenceNo: "ORDER-1001" });
-console.log(result.status);
+console.log(result.response_code); // "100" success, "990" pending, "995" failed
 ```
 
 ### Check your wallet balances
@@ -157,8 +157,9 @@ import { parseCallback } from "zynlepay-node";
 app.post("/zynlepay/callback", (req, res) => {
   const callback = parseCallback(req.body);
   // callback.referenceNo — your reference
-  // callback.status      — e.g. "success" or "failed"
-  // callback.raw         — the full payload
+  // callback.responseCode — the raw code, e.g. "100" or "995"
+  // callback.status       — normalized: "success" | "failed"
+  // callback.raw          — the full payload
   res.sendStatus(200);
 });
 ```
