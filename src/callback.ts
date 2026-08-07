@@ -11,8 +11,16 @@ import { ZynlePayError } from "./http-client.js";
 export interface ZynlePayCallback {
   /** The reference number you assigned to the transaction. */
   referenceNo: string;
-  /** Final transaction status (e.g. `"success"`, `"failed"`). */
-  status: string;
+  /** The raw `response_code` from the callback payload (e.g. `"100"`, `"995"`). */
+  responseCode: string;
+  /**
+   * Normalized outcome derived from {@link ZynlePayCallback.responseCode} -
+   * `"success"` for `"100"`, `"failed"` for everything else. There is no
+   * `status` field in real ZynlePay callback payloads to read this from
+   * directly; unrecognized codes are treated as failed rather than guessed
+   * as successful.
+   */
+  status: "success" | "failed";
   /** The full, unmodified callback payload. */
   raw: Record<string, unknown>;
 }
@@ -26,8 +34,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
  *
  * Parse the JSON body of the incoming webhook request and pass it here. The
  * function checks for the two fields every callback must carry —
- * `reference_no` and `status` — and returns a camelCase view while keeping
- * the raw payload intact for any additional fields.
+ * `reference_no` and `response_code` — and returns a camelCase view (plus a
+ * normalized `status`) while keeping the raw payload intact for any
+ * additional fields.
  *
  * @param payload - The parsed JSON body of the callback request.
  * @returns The validated callback.
@@ -48,12 +57,13 @@ export function parseCallback(payload: unknown): ZynlePayCallback {
   if (typeof payload["reference_no"] !== "string" || payload["reference_no"] === "") {
     throw new Error('ZynlePay callback payload is missing required field "reference_no"');
   }
-  if (typeof payload["status"] !== "string" || payload["status"] === "") {
-    throw new Error('ZynlePay callback payload is missing required field "status"');
+  if (typeof payload["response_code"] !== "string" || payload["response_code"] === "") {
+    throw new Error('ZynlePay callback payload is missing required field "response_code"');
   }
   return {
     referenceNo: payload["reference_no"],
-    status: payload["status"],
+    responseCode: payload["response_code"],
+    status: payload["response_code"] === "100" ? "success" : "failed",
     raw: payload,
   };
 }
