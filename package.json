@@ -1,6 +1,6 @@
 {
   "name": "zynlepay-node",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Unofficial TypeScript SDK for the ZynlePay payments API (card, mobile money, wallet-to-bank).",
   "repository": {
     "type": "git",
