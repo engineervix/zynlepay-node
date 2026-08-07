@@ -13,7 +13,21 @@ export default defineConfig({
   base,
   cleanUrls: true,
   head: [["link", { rel: "icon", href: `${base}favicon.ico` }]],
+  sitemap: {
+    hostname: "https://engineervix.github.io/zynlepay-node/",
+  },
   themeConfig: {
+    search: {
+      provider: "local",
+    },
+    externalLinkIcon: true,
+    editLink: {
+      pattern: "https://github.com/engineervix/zynlepay-node/edit/main/docs/:path",
+      text: "Edit this page on GitHub",
+    },
+    lastUpdated: {
+      text: "Last updated",
+    },
     nav: [
       { text: "Guide", link: "/guide/getting-started" },
       { text: "Reference", link: "/reference/card-deposit" },
@@ -40,7 +54,7 @@ export default defineConfig({
         ],
       },
     ],
-    socialLinks: [],
+    socialLinks: [{ icon: "github", link: "https://github.com/engineervix/zynlepay-node" }],
     footer: {
       message:
         'Favicon by <a href="https://www.svgrepo.com/svg/419248/pay-sale-shop">SVG Repo</a>. Built with <a href="https://vitepress.dev/">VitePress</a>.',
