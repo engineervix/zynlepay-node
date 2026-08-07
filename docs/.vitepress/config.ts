@@ -12,6 +12,7 @@ export default defineConfig({
   description: "Unofficial TypeScript SDK for the ZynlePay payments API",
   base,
   cleanUrls: true,
+  srcExclude: ["**/_shared/**"],
   head: [["link", { rel: "icon", href: `${base}favicon.ico` }]],
   sitemap: {
     hostname: "https://engineervix.github.io/zynlepay-node/",

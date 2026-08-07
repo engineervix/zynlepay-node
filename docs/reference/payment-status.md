@@ -30,9 +30,12 @@ The response preserves all raw API fields. Notable fields:
   - `"995"` — failed.
 - `reference_no` — echo of your reference number.
 - `message` — human-readable API message.
-- `status` — documented by ZynlePay but not observed in any live sandbox
-  response (every one carried `response_code`/`message` only). Don't build
-  logic around it being present; use `response_code`.
+
+::: warning `status` is unreliable
+Documented by ZynlePay but not observed in any live sandbox response (every
+one carried `response_code`/`message` only). Don't build logic around it
+being present; use `response_code`.
+:::
 
 This operation is idempotent and safe to retry. Throws `ZynlePayError` on
 failure — see [Error handling](/guide/errors).

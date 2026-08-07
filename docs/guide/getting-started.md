@@ -17,7 +17,9 @@ npm install zynlepay-node
 
 ## Create a client
 
+::: warning
 Store credentials in environment variables — never in source control.
+:::
 
 ```ts
 import { ZynlePayClient } from "zynlepay-node";

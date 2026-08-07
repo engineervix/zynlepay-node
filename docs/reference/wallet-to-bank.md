@@ -51,8 +51,4 @@ rich payload; notable fields:
 - `operator` — operator identifier, when present.
 - `notification_type` — e.g. `"new"`.
 
-Wallet-to-bank responses report outcome via `response_code` /
-`response_description`, **not** a `status` field. Inspect `response_code` to
-determine the outcome. Transport-level failures (non-2xx HTTP, network
-errors, timeouts) throw `ZynlePayError` — see
-[Error handling](/guide/errors).
+<!--@include: ./_shared/response-code-warning.md-->

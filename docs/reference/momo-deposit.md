@@ -61,8 +61,4 @@ The response preserves all raw API fields. Notable fields:
 - `phone` — echo of the phone number the deposit was requested for.
 - `udf1`–`udf5` — user-defined fields echoed back by the API.
 
-Momo deposit responses report outcome via `response_code` /
-`response_description`, **not** a `status` field. A non-success response code
-arrives as a normal HTTP 200 response, not as an exception. Transport-level
-failures (non-2xx HTTP, network errors, timeouts) still throw
-`ZynlePayError` — see [Error handling](/guide/errors).
+<!--@include: ./_shared/response-code-warning.md-->

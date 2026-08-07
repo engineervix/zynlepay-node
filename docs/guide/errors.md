@@ -55,7 +55,10 @@ A timed-out request throws `ZynlePayError` with a message containing
 ## Retrying safely
 
 Retry only idempotent lookups ([paymentStatus](/reference/payment-status),
-[checkBalance](/reference/balance-check)) automatically. For money-moving
-operations, a timeout is ambiguous — the API may have accepted the request.
-Check `paymentStatus` with the same `referenceNo` before retrying a payment
-operation.
+[checkBalance](/reference/balance-check)) automatically.
+
+::: warning Don't blind-retry money-moving operations
+A timeout is ambiguous — the API may have accepted the request. Check
+`paymentStatus` with the same `referenceNo` before retrying a payment
+operation, or you risk double-charging or double-paying out.
+:::

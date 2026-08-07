@@ -4,8 +4,10 @@ ZynlePay transactions are asynchronous. The API response tells you a request
 was accepted; the final outcome — success or failure — is delivered later to
 the callback URL configured in your merchant dashboard.
 
+::: warning
 Always update your records from the callback, not from the initial API
 response.
+:::
 
 ## The callback payload
 
