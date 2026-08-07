@@ -337,7 +337,7 @@ export class ZynlePayClient {
    *
    * @example
    * const result = await client.paymentStatus({ referenceNo: "ORDER-1001" });
-   * console.log(result.status);
+   * console.log(result.response_code); // "100" success, "990" pending, "995" failed
    */
   async paymentStatus(request: PaymentStatusRequest): Promise<PaymentStatusResponse> {
     return this.send<PaymentStatusResponse>(this.urls.paymentStatus, {

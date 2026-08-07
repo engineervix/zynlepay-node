@@ -184,17 +184,24 @@ export interface PaymentStatusRequest {
 
 /** Raw response returned by the ZynlePay payment-status endpoint. */
 export interface PaymentStatusResponse {
-  /** Transaction status as reported by the API. */
-  status?: string;
-  /** Echo of your reference number. */
-  reference_no?: string;
   /**
-   * API response code. `"990"` indicates the status could not be determined
-   * yet — the API asks you to retry after 60 seconds (see `message`).
+   * API response code — the field to branch on. Confirmed against a live
+   * sandbox: `"100"` success, `"990"` indeterminate (retry after 60s, see
+   * `message`), `"995"` failed.
    */
   response_code?: string;
+  /** Echo of your reference number. */
+  reference_no?: string;
   /** Human-readable API message, e.g. retry guidance for code `990`. */
   message?: string;
+  /**
+   * Transaction status, if the API includes one. Documented by ZynlePay but
+   * never observed in a live sandbox response (`"100"`, `"990"`, and `"995"`
+   * responses all carried `response_code`/`message` only, no `status` field
+   * at all). Don't rely on this being present; branch on `response_code`
+   * instead.
+   */
+  status?: string;
   /** Any additional fields returned by the API. */
   [key: string]: unknown;
 }
