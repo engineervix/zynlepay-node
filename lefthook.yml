@@ -1,0 +1,6 @@
+# Enforce Conventional Commits on every commit, however the message was authored.
+# For a guided prompt instead of writing the message by hand, use `npm run commit`.
+commit-msg:
+  commands:
+    "lint commit message":
+      run: npx --no-install commitlint --edit {1}

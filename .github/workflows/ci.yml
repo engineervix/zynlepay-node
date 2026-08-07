@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22, 24, 26]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run format:check
+
+      - run: npm run lint
+
+      - run: npm run typecheck
+
+      - name: Test
+        run: npx vitest run
+
+      - run: npm run build
+
+  coverage:
+    runs-on: ubuntu-latest
+    outputs:
+      coverage: ${{ steps.extract_coverage.outputs.coverage }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - run: npx vitest run --coverage
+
+      - name: Extract test coverage
+        id: extract_coverage
+        run: |
+          COVERAGE=$(node -p "require('./coverage/coverage-summary.json').total.lines.pct")
+          echo "coverage=$COVERAGE" >> "$GITHUB_OUTPUT"
+
+  coverage-badge:
+    needs: coverage
+    runs-on: ubuntu-latest
+    if: (github.repository == 'engineervix/zynlepay-node') && (github.ref == 'refs/heads/main')
+    steps:
+      - name: Create Test Coverage Badge
+        uses: schneegans/dynamic-badges-action@v1.8.0
+        with:
+          auth: ${{ secrets.GIST_TOKEN }}
+          gistID: 022ee313a1a2c75231887e17c616e5eb
+          filename: covbadge.json
+          label: coverage
+          message: ${{ needs.coverage.outputs.coverage }}%
+          valColorRange: ${{ needs.coverage.outputs.coverage }}
+          minColorRange: 50
+          maxColorRange: 90
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Extract release notes
+        env:
+          RELEASE_NOTES_PATH: ${{ runner.temp }}/RELEASE_NOTES.md
+        run: node scripts/extract-release-notes.mjs
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          name: ${{ github.ref_name }}
+          body_path: ${{ runner.temp }}/RELEASE_NOTES.md
